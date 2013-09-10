@@ -1,8 +1,10 @@
 var Amoeba = Class.create({
   _renderer: {},
   _scene: {},
+  _camera: {},
+  _emitter: {},
   config: {
-    canvas  : '#amoeba',
+    canvas  : 'amoeba',
     renderer: 'webgl',
     width   : 800,
     height  : 600,
@@ -25,12 +27,29 @@ var Amoeba = Class.create({
 
     this._renderer = renderer;
     this._scene = new THREE.Scene();
+
+    // TEMPORARY CODE HERE
+    var camera = new THREE.PerspectiveCamera(
+      35,
+      this.config.width / this.config.height,
+      1, 
+      10000
+    );
+
+    camera.position.set(0, 0, 5);
+    this._scene.add(camera);
+    this._camera = camera;
+    
+    var geometry = new THREE.TorusGeometry(1, 0.42);
+    var material = new THREE.MeshNormalMaterial();
+    var mesh = new THREE.Mesh(geometry, material);
+    this._scene.add(mesh); 
   },
   update: function(dt) {
-    requestAnimationFrame(this.draw);
-    this.draw();
+    window.requestAnimationFrame(this.update.bind(this));
+    this.render();
   },
-  draw: function() {
+  render: function() {
     this._renderer.render(this._scene, this._camera);
   }
 });
