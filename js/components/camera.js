@@ -6,7 +6,7 @@ var Camera = Class.create(Component, {
     $super("camera"); 
   },
   setOwner: function(owner) {
-    if (e instanceof Entity) {
+    if (owner instanceof Entity) {
       var camera = new THREE.PerspectiveCamera(
         this._opts[0],
         this._opts[1],

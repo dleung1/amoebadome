@@ -1,8 +1,15 @@
 var Entity = Class.create({
   initialize: function(name) {
     THREE.Object3D.call(this);
-    this.name = name;
+    
+    var proto = THREE.Object3D.prototype;
+    for(var p in proto) {
+      if(!this[p] && proto.hasOwnProperty(p)) {
+        this[p] = proto[p];
+      }
+    }
 
+    this.name = name;
     this._components = {};
   },
   addComponent: function(comp) {
