@@ -74,8 +74,18 @@ var Game = Class.create({
     var geometry = new THREE.SphereGeometry();
     var material = new THREE.MeshNormalMaterial();
     var mes = new Mesh(geometry, material);
+    var mco = new Controller({
+      'fire': function() {
+        console.log(this.getComponent("rigidbody")._body.force);
+        this.getComponent("rigidbody")._body.force.set(0, 100, 0);
+      }
+    });
+    var phy = new Rigidbody(5, new CANNON.Sphere(50));
 
     ee.addComponent(mes);
+    ee.addComponent(mco);
+    ee.addComponent(phy);
+    ee.position.set(0, 20, 0);
     this._scene.add(ee); 
 
     this.update();
@@ -90,3 +100,4 @@ var Game = Class.create({
 });
 
 Game.Input = new InputService();
+Game.Physics = new PhysicsService();

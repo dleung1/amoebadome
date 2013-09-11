@@ -8,7 +8,11 @@ var Entity = Class.create({
   },
   addComponent: function(comp) {
     this._components[comp.getType()] = comp;
+    console.log(comp.getType());
     comp.setOwner(this);
+  },
+  getComponent: function(type) {
+    return this._components[type];
   },
   getName: function() {
     return this._name;
