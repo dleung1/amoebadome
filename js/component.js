@@ -1,6 +1,5 @@
 var Component = Class.create({
   initialize: function(type){
-    this._owner = {};
     this._type = type;
   },
   update: function(dt) {},

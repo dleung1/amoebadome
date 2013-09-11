@@ -1,8 +1,6 @@
 var Camera = Class.create(Component, {
   initialize: function($super) {
-    this._owner = {};
     this._opts = Array.prototype.slice.call(arguments, 1);
-
     $super("camera"); 
   },
   setOwner: function($super, owner) {
@@ -15,7 +13,6 @@ var Camera = Class.create(Component, {
       );   
       _.extend(owner, camera);
 
-      this._owner = owner;
       this._camera = camera;
       $super(owner); 
     }

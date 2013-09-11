@@ -69,11 +69,14 @@ var Game = Class.create({
 
     this._scene.add(e);
     this._camera = e;
-  
+
+    var ee = new Entity("Torus");
     var geometry = new THREE.SphereGeometry();
     var material = new THREE.MeshNormalMaterial();
-    var mesh = new THREE.Mesh(geometry, material);
-    this._scene.add(mesh); 
+    var mes = new Mesh(geometry, material);
+
+    ee.addComponent(mes);
+    this._scene.add(ee); 
 
     this.update();
   },
