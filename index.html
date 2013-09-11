@@ -7,27 +7,37 @@
 		
 			
     <script src="http://ajax.googleapis.com/ajax/libs/prototype/1.7.1.0/prototype.js"></script>
-    <script src="vendor/three.js/Three.js"></script>
-		<script src="vendor/three.js/Detector.js"></script>
+    <script src="vendor/three/Three.js"></script>
+		<script src="vendor/three/Detector.js"></script>
 		<!-- https://github.com/mrdoob/stats.js -->
-		<script src="vendor/three.js/Stats.js"></script>
+		<script src="vendor/three/Stats.js"></script>
 		<script src="vendor/threex/THREEx.screenshot.js"></script>
 		<script src="vendor/threex/THREEx.FullScreen.js"></script>
 		<script src="vendor/threex/THREEx.WindowResize.js"></script>
-		<script src="vendor/threex.dragpancontrols.js"></script>
-    <script src="vendor/EventEmitter-4.0.3.min.js"></script>
-    <script src="js/amoeba.js"></script>
+		<script src="vendor/threex/THREEx.DragPanControls.js"></script>
+    <script src="vendor/threex/THREEx.KeyboardState.js"></script>
+    <script src="vendor/EventEmitter.js"></script>
+    <script src="vendor/Underscore.js"></script>
+    <script src="vendor/dat.gui.min.js"></script>
+    <script src="js/input.js"></script>
+    <script src="js/game.js"></script>
     <script src="js/component.js"></script>
     <script src="js/entity.js"></script>
     <script src="js/components/camera.js"></script>
+    <script src="js/components/controller.js"></script>
 
 		<link  href="css/main.css" rel="stylesheet"/>
 	</head>
 <body>
   <div id="amoeba"></div>
 	<script type="text/javascript">
-    var game = new Amoeba();
-		if( !game.init() ) game.update();
+    var Amoeba = new Game({
+      canvas: 'amoeba',
+      width: window.innerWidth,
+      height: window.innerHeight,
+      debug: true,
+      release: false
+    });
 	</script>
 </body>
 </html>

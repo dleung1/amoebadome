@@ -1,14 +1,8 @@
 var Entity = Class.create({
   initialize: function(name) {
     THREE.Object3D.call(this);
+    _.defaults(this, THREE.Object3D.prototype);
     
-    var proto = THREE.Object3D.prototype;
-    for(var p in proto) {
-      if(!this[p] && proto.hasOwnProperty(p)) {
-        this[p] = proto[p];
-      }
-    }
-
     this.name = name;
     this._components = {};
   },

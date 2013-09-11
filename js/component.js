@@ -7,7 +7,6 @@ var Component = Class.create({
   draw: function() {},
   destroy: function() {},
   setOwner: function(owner) {
-    // Handle removing properties here.
     this._owner = owner;
   },
   getOwner: function() {

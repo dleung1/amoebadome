@@ -5,7 +5,7 @@ var Camera = Class.create(Component, {
 
     $super("camera"); 
   },
-  setOwner: function(owner) {
+  setOwner: function($super, owner) {
     if (owner instanceof Entity) {
       var camera = new THREE.PerspectiveCamera(
         this._opts[0],
@@ -13,30 +13,11 @@ var Camera = Class.create(Component, {
         this._opts[2],
         this._opts[3]
       );   
-     
-      var proto = THREE.Camera.prototype;
-      for(var p in proto) {
-        if(!owner[p] && proto.hasOwnProperty(p)) {
-          owner[p] = proto[p]
-        }
-      }
+      _.extend(owner, camera);
 
-      proto = THREE.PerspectiveCamera.prototype;
-      for(var p in proto) {
-        if(!owner[p] && proto.hasOwnProperty(p)) {
-          owner[p] = proto[p];
-        }
-      }
-
-      for(var p in camera) {
-        if(!owner[p] && camera.hasOwnProperty(p)) {
-          owner[p] = camera[p];
-        }
-      }
-
-      
       this._owner = owner;
       this._camera = camera;
+      $super(owner); 
     }
   }
 });
