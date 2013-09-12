@@ -7,6 +7,7 @@ var Mesh = Class.create(Component, {
   setOwner: function($super, owner) {
     var mesh = new THREE.Mesh(this._geometry, this._material);    
     mesh.useQuaternion = true;
+    owner.useQuaternion = true;
     owner.add(mesh);
 
     this._mesh = mesh;

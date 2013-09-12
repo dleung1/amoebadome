@@ -64,7 +64,7 @@ var Game = Class.create({
     e.addComponent(cam);
     e.addComponent(con);
     
-    e.position.set(0, 50, -50);
+    e.position.set(0, 300, -300);
     e.lookAt(new THREE.Vector3(0, 0, 0));
 
     this._scene.add(e);
@@ -77,16 +77,29 @@ var Game = Class.create({
     var mco = new Controller({
       'fire': function() {
         console.log(this.getComponent("rigidbody")._body.force);
-        this.getComponent("rigidbody")._body.force.set(0, 100, 0);
+        this.getComponent("rigidbody")._body.force.set(0, 0, 200);
       }
     });
     var phy = new Rigidbody(5, new CANNON.Sphere(50));
+    phy._body.position.y = 100;
 
     ee.addComponent(mes);
     ee.addComponent(mco);
     ee.addComponent(phy);
-    ee.position.set(0, 20, 0);
     this._scene.add(ee); 
+
+  
+    var pln = new THREE.PlaneGeometry(300, 300);
+    var mat = new THREE.MeshNormalMaterial();
+
+    var ground = new Entity("Ground");
+    var gme = new Mesh(pln, mat);
+    var rbd = new Rigidbody(0, new CANNON.Plane());
+    rbd._body.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
+
+    ground.addComponent(gme);
+    ground.addComponent(rbd);
+    this._scene.add(ground);
 
     this.update();
   },

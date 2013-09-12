@@ -1,7 +1,7 @@
 var PhysicsService = Class.create(EventEmitter.prototype, {
   initialize: function() {
     var world = new CANNON.World();
-    world.gravity.set(0, -9.82, 0);
+    world.gravity.set(0, -20, 0);
     world.broadphase = new CANNON.NaiveBroadphase();
 
     this._world = world;
