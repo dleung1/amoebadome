@@ -34,9 +34,8 @@ var Game = Class.create({
       this._gui = new dat.GUI();
     }
 
-    // THIS IS TEMPORARY FOR TESTING ONLY
-    var e = new Entity("Main Camera");
-    var cam = new Camera(
+    var cam = new Entity.Camera(
+      "Main Camera",
       45, 
       config.width / config.height,
       0.1, 
@@ -61,20 +60,19 @@ var Game = Class.create({
         this.translateX(1);
       }
     });
-    e.addComponent(cam);
-    e.addComponent(con);
+    cam.addComponent(con);
     
-    e.position.set(0, 300, -300);
-    e.lookAt(new THREE.Vector3(0, 0, 0));
+    cam.position.set(0, 300, -300);
+    cam.lookAt(new THREE.Vector3(0, 0, 0));
 
-    this._scene.add(e);
-    this._camera = e;
+    this._scene.add(cam);
+    this._camera = cam;
 
-    var ee = new Entity("Torus");
-    var geometry = new THREE.SphereGeometry();
-    var material = new THREE.MeshNormalMaterial();
-    var mes = new Mesh(geometry, material);
-    var mco = new Controller({
+    var geo = new THREE.SphereGeometry();
+    var mat = new THREE.MeshNormalMaterial();
+
+    var tor = new Entity.Mesh("Torus", geo, mat);
+    var ctr = new Controller({
       'fire': function() {
         console.log(this.getComponent("rigidbody")._body.force);
         this.getComponent("rigidbody")._body.force.set(0, 0, 200);
@@ -83,23 +81,19 @@ var Game = Class.create({
     var phy = new Rigidbody(5, new CANNON.Sphere(50));
     phy._body.position.y = 100;
 
-    ee.addComponent(mes);
-    ee.addComponent(mco);
-    ee.addComponent(phy);
-    this._scene.add(ee); 
+    tor.addComponent(ctr);
+    tor.addComponent(phy);
+    this._scene.add(tor); 
 
-  
     var pln = new THREE.PlaneGeometry(300, 300);
-    var mat = new THREE.MeshNormalMaterial();
-
-    var ground = new Entity("Ground");
-    var gme = new Mesh(pln, mat);
+    var gnt = new THREE.MeshNormalMaterial();
+  
+    var gnd = new Entity.Mesh("Ground", pln, gnt);
     var rbd = new Rigidbody(0, new CANNON.Plane());
     rbd._body.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
 
-    ground.addComponent(gme);
-    ground.addComponent(rbd);
-    this._scene.add(ground);
+    gnd.addComponent(rbd);
+    this._scene.add(gnd);
 
     this.update();
   },
