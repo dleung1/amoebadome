@@ -11,7 +11,7 @@ Rigidbody.prototype.setOwner = function(owner) {
   owner.position.copy(this._body.position);
   owner.quaternion.copy(this._body.quaternion);
 
-  Game.Physics.addListener('tick', _.bind(function() {
+  Game.Physics.addListener('step', _.bind(function() {
     this._body.position.copy(this._owner.position);
     this._body.quaternion.copy(this._owner.quaternion);
   }, this));

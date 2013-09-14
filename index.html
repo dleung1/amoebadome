@@ -25,8 +25,10 @@
     <script src="js/game.js"></script>
     <script src="js/component.js"></script>
     <script src="js/entity.js"></script>
+    <script src="js/prefab.js"></script>
     <script src="js/components/controller.js"></script>
     <script src="js/components/rigidbody.js"></script>
+    <script src="js/components/follow.js"></script>
 
 		<link  href="css/main.css" rel="stylesheet"/>
 	</head>
@@ -41,51 +43,48 @@
       release: false
     });
 
-    var camera = new Entity.Camera(
-      "Main Camera",
-      45, 
-      window.innerWidth / window.innerHeight,
-      0.1, 
-      10000
-    );
+    Prefab.define("PlayerCamera", function() {
+      var camera = new Entity.Camera(
+        45, 
+        window.innerWidth / window.innerHeight,
+        0.1,
+        10000
+      ); 
+      camera.useQuaternion = false;
 
-    var camControls = new Controller({
-      'forward': function() {
-        this.translateZ(1);
-      },
-      'back': function() {
-        this.translateZ(-1);
-      },
-      'left': function() {
-        this.translateX(-1);
-      },
-      'right': function() {
-        this.translateX(1);
-      }
+      var follow = new Follow();
+      follow.offset = new THREE.Vector3(0, 200, 0);
+
+      var controls = new Controller({
+        'forward': function() {
+          var force = this.localToWorld(this.up);
+          var tar = this.getComponent("follow").target;
+
+          tar.getComponent("rigidbody")._body.force = force;
+        }
+      });
+      
+      camera.addComponent(follow);
+      camera.addComponent(controls);
+      return camera;
     });
-    camera.addComponent(camControls);
-    Amoeba.addEntity(camera);
-
-    camera.position.set(0, 200, -200);
-    camera.lookAt(new THREE.Vector3(0, 0, 0));
+    var camera = Amoeba.addEntity("PlayerCamera");
 
     var geo = new THREE.SphereGeometry()
       , mat = new THREE.MeshNormalMaterial()
       , col = new CANNON.Sphere(50);
     
 
-    var sphere = new Entity.Mesh("Sphere", geo, mat);
-    var sbdy = new Rigidbody(5, col); 
-    sbdy._body.position.set(0, 100, 0);
-    var spct = new Controller({
-      'fire': function() {
-        this.getComponent("rigidbody")._body.force.set(0, 0, 200);
-      }
+    Prefab.define("Ball", function() {
+      var sphere = new Entity.Mesh("Sphere", geo, mat);
+      var sbdy = new Rigidbody(5, col); 
+      sbdy._body.position.set(0, 100, 0);
+      
+      sphere.addComponent(sbdy);
+      return sphere;
     });
-    
-    sphere.addComponent(sbdy);
-    sphere.addComponent(spct);
-    Amoeba.addEntity(sphere);
+    var ball = Amoeba.addEntity("Ball");
+    camera.getComponent("follow").target = ball;
 
     var pln = new THREE.PlaneGeometry(300, 300)
       , gma = new THREE.MeshNormalMaterial()

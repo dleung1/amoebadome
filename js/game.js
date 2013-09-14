@@ -3,7 +3,7 @@ var GUID = function() {
 };
 GUID._guid = 1;
 
-var Game = Class.create({
+var Game = Class.create(EventEmitter.prototype, {
   entities: {},
   initialize: function(opts) {
     var config = _.defaults(opts || {}, {
@@ -37,12 +37,15 @@ var Game = Class.create({
       this._stats = stats;
       this._gui = new dat.GUI();
     }
+    this.emitEvent('initialized');
   },
   run: function() {
+    this.emitEvent('running');
     this.update();
   },
   update: function(dt) {
     window.requestAnimationFrame(this.update.bind(this));
+    this.emitEvent('tick');
     this.render();
   },
   render: function() {
@@ -50,14 +53,32 @@ var Game = Class.create({
   },
   addEntity: function(e) {
     if (e.id && e.id <= GUID._guid) return;
+    if (typeof e === "string") {
+      e = Prefab.create(e);
+    } 
 
-    if (this._camera === undefined && e instanceof Entity.Camera) {
-      this._camera = e;
+    var proc = function(el) {
+      if (this._camera === undefined && el instanceof Entity.Camera) {
+        this._camera = el;
+      }
+      el.guid = GUID();
+      el.name = el.name || "Entity" + el.guid;
+      this.entities[el.guid] = el;
+      this._scene.add(el);
+
+      _.each(_.values(el.components), function(c) {
+        c.update && this.addListener('tick', _.bind(c.update, c));
+      }, this);
+      this.emitEvent('entity', [el]);
+    }.bind(this);
+
+    if (e.children.length) {
+      THREE.SceneUtils.traverseHierarchy(e, proc);
+    } else {
+      proc(e); 
+      this.emitEvent('entity', [e]);
     }
-
-    e.id = GUID();
-    this.entities[e.id] = e;
-    this._scene.add(e);
+    return e;
   },
   removeEntity: function(e) {
     this._scene.remove(e);

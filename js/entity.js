@@ -3,7 +3,7 @@ var Entity = function(name) {
   this.components = {};
 };
 
-Entity.prototype = {
+Entity.prototype = _.extend({
   addComponent: function(comp) {
     this.components[comp.getType()] = comp;
     comp.setOwner(this);
@@ -11,7 +11,7 @@ Entity.prototype = {
   getComponent: function(type) {
     return this.components[type];
   }
-};
+}, EventEmitter.prototype);
 Entity.prototype.constructor = Entity.Transform;
 
 Entity.Transform = function(name) {
@@ -26,17 +26,28 @@ Entity.Transform.prototype = Object.create(THREE.Object3D.prototype);
 Entity.Transform.prototype.constructor = Entity.Transform;
 
 Entity.Camera = function(name) {
-  var args = Array.prototype.slice.call(arguments, 1);
+  var args;
+  if (typeof name === "string") { 
+    args = Array.prototype.slice.call(arguments, 1);
+  } else {
+    args = Array.prototype.slice.call(arguments);
+  }
   THREE.PerspectiveCamera.apply(this, args);
 
   _.extend(this, Entity.prototype);
   Entity.call(this, name);
+
+  this.useQuaternion = true;
 };
 Entity.Camera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 Entity.Camera.prototype.constructor = Entity.Camera;
 
 Entity.Mesh = function(name) {
-  var args = Array.prototype.slice.call(arguments, 1);
+  var args;
+  (typeof name === "string") ? 
+    args = Array.prototype.slice.call(arguments, 1) :
+    args = Array.prototype.slice.call(arguments);
+
   THREE.Mesh.apply(this, args);
 
   _.extend(this, Entity.prototype);

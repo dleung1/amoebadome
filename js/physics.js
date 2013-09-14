@@ -10,7 +10,7 @@ var PhysicsService = Class.create(EventEmitter.prototype, {
   _tick: function() {
     window.requestAnimationFrame(this._tick.bind(this));
     this._world.step(1 / 60);
-    this.emitEvent('tick');
+    this.emitEvent('step');
   },
   addBody: function(body) {
     if(body instanceof CANNON.RigidBody) {
