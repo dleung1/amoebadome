@@ -40,6 +40,66 @@
       debug: true,
       release: false
     });
+
+    var camera = new Entity.Camera(
+      "Main Camera",
+      45, 
+      window.innerWidth / window.innerHeight,
+      0.1, 
+      10000
+    );
+
+    var camControls = new Controller({
+      'forward': function() {
+        this.translateZ(1);
+      },
+      'back': function() {
+        this.translateZ(-1);
+      },
+      'left': function() {
+        this.translateX(-1);
+      },
+      'right': function() {
+        this.translateX(1);
+      }
+    });
+    camera.addComponent(camControls);
+    Amoeba.addEntity(camera);
+
+    camera.position.set(0, 200, -200);
+    camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+    var geo = new THREE.SphereGeometry()
+      , mat = new THREE.MeshNormalMaterial()
+      , col = new CANNON.Sphere(50);
+    
+
+    var sphere = new Entity.Mesh("Sphere", geo, mat);
+    var sbdy = new Rigidbody(5, col); 
+    sbdy._body.position.set(0, 100, 0);
+    var spct = new Controller({
+      'fire': function() {
+        this.getComponent("rigidbody")._body.force.set(0, 0, 200);
+      }
+    });
+    
+    sphere.addComponent(sbdy);
+    sphere.addComponent(spct);
+    Amoeba.addEntity(sphere);
+
+    var pln = new THREE.PlaneGeometry(300, 300)
+      , gma = new THREE.MeshNormalMaterial()
+      , gcd = new CANNON.Plane();
+
+    var ground = new Entity.Mesh("Ground", pln, gma);
+    var sbd = new Rigidbody(0, gcd);
+    sbd._body.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
+
+    ground.addComponent(sbd);
+    Amoeba.addEntity(ground);
+
+    Amoeba.run();
+    
 	</script>
 </body>
 </html>
