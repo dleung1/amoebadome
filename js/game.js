@@ -74,7 +74,6 @@ var Game = Class.create({
     var tor = new Entity.Mesh("Torus", geo, mat);
     var ctr = new Controller({
       'fire': function() {
-        console.log(this.getComponent("rigidbody")._body.force);
         this.getComponent("rigidbody")._body.force.set(0, 0, 200);
       }
     });
