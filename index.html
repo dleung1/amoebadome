@@ -50,32 +50,41 @@
         0.1,
         10000
       ); 
-      camera.useQuaternion = false;
 
       var follow = new Follow();
-      follow.offset = new THREE.Vector3(0, 200, 0);
+      follow.offset = new THREE.Vector3(0, 200, -1); //Fuck you, gimbal.
 
       var controls = new Controller({
         'forward': function() {
-          var force = this.localToWorld(this.up);
           var tar = this.getComponent("follow").target;
-
-          tar.getComponent("rigidbody")._body.force = force;
+          tar.getComponent("rigidbody")._body.force.z = 200;
+        },
+        'left': function() {
+          var tar = this.getComponent("follow").target;
+          tar.getComponent("rigidbody")._body.force.x = 200;
+        },
+        'right': function() {
+          var tar = this.getComponent("follow").target;
+          tar.getComponent("rigidbody")._body.force.x = -200;
+        },
+        'back': function() {
+          var tar = this.getComponent("follow").target;
+          tar.getComponent("rigidbody")._body.force.z = -200;
         }
       });
-      
       camera.addComponent(follow);
       camera.addComponent(controls);
       return camera;
     });
     var camera = Amoeba.addEntity("PlayerCamera");
 
-    var geo = new THREE.SphereGeometry()
-      , mat = new THREE.MeshNormalMaterial()
-      , col = new CANNON.Sphere(50);
-    
+        
 
     Prefab.define("Ball", function() {
+      var geo = new THREE.SphereGeometry()
+        , mat = new THREE.MeshNormalMaterial()
+        , col = new CANNON.Sphere(50);
+
       var sphere = new Entity.Mesh("Sphere", geo, mat);
       var sbdy = new Rigidbody(5, col); 
       sbdy._body.position.set(0, 100, 0);
@@ -86,17 +95,37 @@
     var ball = Amoeba.addEntity("Ball");
     camera.getComponent("follow").target = ball;
 
-    var pln = new THREE.PlaneGeometry(300, 300)
-      , gma = new THREE.MeshNormalMaterial()
-      , gcd = new CANNON.Plane();
+    Prefab.define("Ground", function() {
+      var pln = new THREE.PlaneGeometry(1000, 1000, 20, 20)
+        , gma = new THREE.MeshBasicMaterial({ color: 0x333333, wireframe: true })
+        , gcd = new CANNON.Plane();
 
-    var ground = new Entity.Mesh("Ground", pln, gma);
-    var sbd = new Rigidbody(0, gcd);
-    sbd._body.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
+      var ground = new Entity.Mesh("Ground", pln, gma);
+      var sbd = new Rigidbody(0, gcd);
+      sbd._body.quaternion.setFromAxisAngle(
+        new CANNON.Vec3(1, 0, 0), 
+        -Math.PI / 2
+      );
 
-    ground.addComponent(sbd);
-    Amoeba.addEntity(ground);
+      ground.addComponent(sbd);
+      return ground;
+    });
+    Amoeba.addEntity("Ground");
 
+    var helpZ = new THREE.ArrowHelper(
+      new THREE.Vector3(0, 0, 1),
+      new THREE.Vector3(0, 0, 0),
+      50,
+      0xFF0000
+    );
+    var helpX = new THREE.ArrowHelper(
+      new THREE.Vector3(1, 0, 0),
+      new THREE.Vector3(0, 0, 0),
+      50,
+      0x00FF00
+    );
+    Amoeba._scene.add(helpZ);
+    Amoeba._scene.add(helpX);
     Amoeba.run();
     
 	</script>

@@ -6,7 +6,7 @@ var Follow = function(target) {
     set: function(v) {
       this._target = v;
       if(this._target) {
-        this._owner.position.add(this._target.position, this.offset);
+        this._owner.position.addVectors(this._target.position, this.offset);
         this._owner.lookAt(this._target.position);
       }
     }
@@ -23,5 +23,5 @@ Follow.prototype.constructor = Follow;
 Follow.prototype.update = function(dt) {
   if (this.target === undefined) return;
 
-  this._owner.position.add(this.target.position, this.offset);
+  this._owner.position.addVectors(this.target.position, this.offset);
 };

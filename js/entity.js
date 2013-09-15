@@ -19,8 +19,6 @@ Entity.Transform = function(name) {
 
   _.extend(this, Entity.prototype);
   Entity.call(this, name);
-
-  this.useQuaternion = true;
 };
 Entity.Transform.prototype = Object.create(THREE.Object3D.prototype);
 Entity.Transform.prototype.constructor = Entity.Transform;
@@ -36,8 +34,6 @@ Entity.Camera = function(name) {
 
   _.extend(this, Entity.prototype);
   Entity.call(this, name);
-
-  this.useQuaternion = true;
 };
 Entity.Camera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 Entity.Camera.prototype.constructor = Entity.Camera;
@@ -52,8 +48,6 @@ Entity.Mesh = function(name) {
 
   _.extend(this, Entity.prototype);
   Entity.call(this, name);
-
-  this.useQuaternion = true;
 };
 Entity.Mesh.prototype = Object.create(THREE.Mesh.prototype);
 Entity.Mesh.prototype.constructor = Entity.Mesh;

@@ -20,7 +20,7 @@ var Game = Class.create(EventEmitter.prototype, {
       this._renderer = new THREE.WebGLRenderer({
         antialias: true,
       });
-      this._renderer.setClearColorHex(0x000000, 1);
+      this._renderer.setClearColor(0x000000, 1);
     } else {
       this._renderer = new THREE.CanvasRenderer();
     }
