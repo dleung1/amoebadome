@@ -5,17 +5,14 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		
-			
-    <script src="http://ajax.googleapis.com/ajax/libs/prototype/1.7.1.0/prototype.js"></script>
+    <script src="vendor/Prototype.js"></script>
+    <script src="vendor/jQuery.js"></script>
     <script src="vendor/cannon/Cannon.js"></script>
     <script src="vendor/three/Three.js"></script>
 		<script src="vendor/three/Detector.js"></script>
 		<!-- https://github.com/mrdoob/stats.js -->
 		<script src="vendor/three/Stats.js"></script>
-		<script src="vendor/threex/THREEx.screenshot.js"></script>
-		<script src="vendor/threex/THREEx.FullScreen.js"></script>
 		<script src="vendor/threex/THREEx.WindowResize.js"></script>
-		<script src="vendor/threex/THREEx.DragPanControls.js"></script>
     <script src="vendor/threex/THREEx.KeyboardState.js"></script>
     <script src="vendor/EventEmitter.js"></script>
     <script src="vendor/Underscore.js"></script>
@@ -29,6 +26,7 @@
     <script src="js/components/controller.js"></script>
     <script src="js/components/rigidbody.js"></script>
     <script src="js/components/follow.js"></script>
+    <script src="js/components/interface.js"></script>
 
 		<link  href="css/main.css" rel="stylesheet"/>
 	</head>
@@ -36,11 +34,10 @@
   <div id="amoeba"></div>
 	<script type="text/javascript">
     var Amoeba = new Game({
-      canvas: 'amoeba',
+      canvas: '#amoeba',
       width: window.innerWidth,
       height: window.innerHeight,
       debug: true,
-      release: false
     });
 
     Prefab.define("PlayerCamera", function() {
@@ -93,6 +90,40 @@
       );
       var mbody = new Rigidbody(0.5, new CANNON.Sphere(50));
       mbody._body.position.set(0, 100, 0);
+
+      var inter = new Interface({
+        'position': {
+          target: master,
+          setup: function(el) {
+            $(document.createElement('p'))
+            .addClass('x')
+            .css({
+              color: '#ff0000'
+            })
+            .appendTo($(el));
+
+            $(document.createElement('p'))
+            .addClass('y')
+            .css({
+              color: '#00ff00'
+            })
+            .appendTo($(el));
+
+            $(document.createElement('p'))
+            .addClass('z')
+            .css({
+              color: '#0000ff'
+            })
+            .appendTo($(el));
+          },
+          update: function(el) {
+            $(el).find('.x').text(this.position.x.toPrecision(5));
+            $(el).find('.y').text(this.position.y.toPrecision(5));
+            $(el).find('.z').text(this.position.z.toPrecision(5));
+          }
+        }
+      });
+      master.addComponent(inter);
       master.addComponent(mbody);
       ents.push(master);
       

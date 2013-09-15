@@ -6,17 +6,14 @@ GUID._guid = 1;
 var Game = Class.create(EventEmitter.prototype, {
   entities: {},
   initialize: function(opts) {
-    var config = _.defaults(opts || {}, {
-      canvas  : 'game',
-      renderer: 'webgl',
+    Game.config = _.defaults(opts || {}, {
+      canvas  : '#game',
       width   : 800,
       height  : 600,
-      debug   : true,
-      release : false
+      debug   : true
     });
-    console.log(config);
 
-    if (Detector.webgl && config.renderer === 'webgl') {
+    if (Detector.webgl) {
       this._renderer = new THREE.WebGLRenderer({
         antialias: true,
       });
@@ -24,12 +21,12 @@ var Game = Class.create(EventEmitter.prototype, {
     } else {
       this._renderer = new THREE.CanvasRenderer();
     }
-    this._renderer.setSize(config.width, config.height);
-    document.getElementById(config.canvas).appendChild(this._renderer.domElement);
+    this._renderer.setSize(Game.config.width, Game.config.height);
+    $(Game.config.canvas).append(this._renderer.domElement);
     this._scene = new THREE.Scene();
 
     // Draw debug widgets.
-    if(config.debug) {
+    if(Game.config.debug) {
       var stats = new Stats();
       stats.domElement.style.position = 'absolute';
       stats.domElement.style.bottom = '0px';
