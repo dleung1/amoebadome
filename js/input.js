@@ -5,7 +5,8 @@ var InputService = Class.create(EventEmitter.prototype, {
     'S': 'back',
     'D': 'right',
     'space': 'fire',
-    'E': 'use'
+    'E': 'use',
+    'Q': 'query'
   },
   initialize: function(keys) {
     this._keys = new THREEx.KeyboardState();

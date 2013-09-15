@@ -57,6 +57,10 @@ var Game = Class.create(EventEmitter.prototype, {
       e = Prefab.create(e);
     } 
 
+    if (e instanceof Array) {
+      return _.map(e, this.addEntity, this);
+    }
+
     var proc = function(el) {
       if (this._camera === undefined && el instanceof Entity.Camera) {
         this._camera = el;

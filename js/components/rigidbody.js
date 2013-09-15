@@ -6,7 +6,7 @@ Rigidbody.prototype = Object.create(Component.prototype);
 Rigidbody.prototype.constructor = Rigidbody;
 
 Rigidbody.prototype.setOwner = function(owner) {
-  Game.Physics.addBody(this._body);  
+  Game.Physics._world.add(this._body);  
   
   owner.position.copy(this._body.position);
   owner.quaternion.copy(this._body.quaternion);

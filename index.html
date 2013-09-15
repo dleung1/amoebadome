@@ -70,6 +70,12 @@
         'back': function() {
           var tar = this.getComponent("follow").target;
           tar.getComponent("rigidbody")._body.force.z = -200;
+        },
+        'query': function() {
+          this.getComponent("follow").offset.add(new THREE.Vector3(0, 50, 0));
+        },
+        'use': function() {
+          this.getComponent("follow").offset.add(new THREE.Vector3(0, -50, 0));
         }
       });
       camera.addComponent(follow);
@@ -78,22 +84,44 @@
     });
     var camera = Amoeba.addEntity("PlayerCamera");
 
-        
-
-    Prefab.define("Ball", function() {
-      var geo = new THREE.SphereGeometry()
-        , mat = new THREE.MeshNormalMaterial()
-        , col = new CANNON.Sphere(50);
-
-      var sphere = new Entity.Mesh("Sphere", geo, mat);
-      var sbdy = new Rigidbody(5, col); 
-      sbdy._body.position.set(0, 100, 0);
+    Prefab.define("Player", function() {
+      var ents = [];
+      var master = new Entity.Mesh(
+        "Player",
+        new THREE.SphereGeometry(),
+        new THREE.MeshNormalMaterial()
+      );
+      var mbody = new Rigidbody(0.5, new CANNON.Sphere(50));
+      mbody._body.position.set(0, 100, 0);
+      master.addComponent(mbody);
+      ents.push(master);
       
-      sphere.addComponent(sbdy);
-      return sphere;
+      for(var x = 0; x < 4; x++) {
+        var m = new Entity.Mesh(
+          "Ball" + x,
+          new THREE.SphereGeometry(25),
+          new THREE.MeshNormalMaterial()
+        );
+        var r = new Rigidbody(1, new CANNON.Sphere(25));
+        m.addComponent(r);
+
+        var q = new THREE.Quaternion().setFromAxisAngle(
+          new THREE.Vector3(0, 1, 0),
+          (Math.PI / 4) * x
+        );
+        var p = new THREE.Vector3(0, 100, 100);
+        p.applyQuaternion(q);
+        r._body.position = new CANNON.Vec3(p.x, p.y, p.z);
+
+        // Constrain appendage to master.
+        var cnst = new CANNON.DistanceConstraint(r._body, mbody._body, 105);
+        Game.Physics._world.addConstraint(cnst);
+        ents.push(m);
+      }
+      return ents;
     });
-    var ball = Amoeba.addEntity("Ball");
-    camera.getComponent("follow").target = ball;
+    var player = Amoeba.addEntity("Player");
+    camera.getComponent("follow").target = player[0];
 
     Prefab.define("Ground", function() {
       var pln = new THREE.PlaneGeometry(1000, 1000, 20, 20)
