@@ -34,6 +34,9 @@ Entity.Camera = function(name) {
 
   _.extend(this, Entity.prototype);
   Entity.call(this, name);
+
+  if(Entity.Camera.main === undefined)
+    Entity.Camera.main = this;
 };
 Entity.Camera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 Entity.Camera.prototype.constructor = Entity.Camera;

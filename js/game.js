@@ -49,7 +49,7 @@ var Game = Class.create(EventEmitter.prototype, {
     this.render();
   },
   render: function() {
-    this._renderer.render(this._scene, this._camera);
+    this._renderer.render(this._scene, Entity.Camera.main);
   },
   addEntity: function(e) {
     if (e.id && e.id <= GUID._guid) return;
@@ -62,9 +62,6 @@ var Game = Class.create(EventEmitter.prototype, {
     }
 
     var proc = function(el) {
-      if (this._camera === undefined && el instanceof Entity.Camera) {
-        this._camera = el;
-      }
       el.guid = GUID();
       el.name = el.name || "Entity" + el.guid;
       this.entities[el.guid] = el;
