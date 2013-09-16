@@ -15,7 +15,7 @@ var Game = Class.create(EventEmitter.prototype, {
 
     if (Detector.webgl) {
       this._renderer = new THREE.WebGLRenderer({
-        antialias: true,
+        antialias: true
       });
       this._renderer.setClearColor(0x000000, 1);
     } else {
@@ -49,7 +49,7 @@ var Game = Class.create(EventEmitter.prototype, {
     this._renderer.render(this._scene, Entity.Camera.main);
   },
   addEntity: function(e) {
-    if (e.id && e.id <= GUID._guid) return;
+    if (e.guid && e.guid <= GUID._guid) return;
     if (typeof e === "string") {
       e = Prefab.create(e);
     } 
@@ -70,7 +70,7 @@ var Game = Class.create(EventEmitter.prototype, {
       this.emitEvent('entity', [el]);
     }.bind(this);
 
-    if (e.children.length) {
+    if (e.children.length > 0) {
       THREE.SceneUtils.traverseHierarchy(e, proc);
     } else {
       proc(e); 

@@ -86,7 +86,7 @@
       var master = new Entity.Mesh(
         "Player",
         new THREE.SphereGeometry(),
-        new THREE.MeshNormalMaterial()
+        new THREE.MeshPhongMaterial()
       );
       var mbody = new Rigidbody(0.5, new CANNON.Sphere(50));
       mbody._body.position.set(0, 100, 0);
@@ -131,7 +131,7 @@
         var m = new Entity.Mesh(
           "Ball" + x,
           new THREE.SphereGeometry(25),
-          new THREE.MeshNormalMaterial()
+          new THREE.MeshPhongMaterial()
         );
         var r = new Rigidbody(1, new CANNON.Sphere(25));
         m.addComponent(r);
@@ -156,7 +156,7 @@
 
     Prefab.define("Ground", function() {
       var pln = new THREE.PlaneGeometry(1000, 1000, 20, 20)
-        , gma = new THREE.MeshBasicMaterial({ color: 0x333333, wireframe: true })
+        , gma = new THREE.MeshLambertMaterial()
         , gcd = new CANNON.Plane();
 
       var ground = new Entity.Mesh("Ground", pln, gma);
@@ -170,6 +170,10 @@
       return ground;
     });
     Amoeba.addEntity("Ground");
+
+    var light = new Entity.PointLight("Light", 0xff0000, 1, 1000);
+    light.position.set(0, 100, 0);
+    Amoeba.addEntity(light);
 
     var helpZ = new THREE.ArrowHelper(
       new THREE.Vector3(0, 0, 1),

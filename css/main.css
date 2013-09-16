@@ -30,8 +30,11 @@ body {
 }
 
 .interface dt {
-  border: 1px solid black;
+  padding: 5px;
   background-color: #333;
+  opacity: 0.7;
+  border: 1px solid black;
+  line-height: 0.5em;
 }
 
 .interface dd {

@@ -55,3 +55,45 @@ Entity.Mesh = function(name) {
 Entity.Mesh.prototype = Object.create(THREE.Mesh.prototype);
 Entity.Mesh.prototype.constructor = Entity.Mesh;
 
+Entity.AmbientLight = function(name) {
+  var args;
+  (typeof name === "string") ?
+    args = Array.prototype.slice.call(arguments, 1) :
+    args = Array.prototype.slice.call(arguments);
+  
+  THREE.AmbientLight.apply(this, args);
+
+  _.extend(this, Entity.prototype);
+  Entity.call(this, name);
+
+};
+Entity.AmbientLight.prototype = Object.create(THREE.AmbientLight.prototype);
+Entity.AmbientLight.prototype.constructor = Entity.AmbientLight;
+
+Entity.DirectionalLight = function(name) {
+  var args;
+  (typeof name === "string") ?
+    args = Array.prototype.slice.call(arguments, 1) :
+    args = Array.prototype.slice.call(arguments);
+
+  THREE.DirectionalLight.apply(this, args);
+
+  _.extend(this, Entity.prototype);
+  Entity.call(this, name);
+};
+Entity.DirectionalLight.prototype = Object.create(THREE.DirectionalLight.prototype);
+Entity.DirectionalLight.prototype.constructor = Entity.DirectionalLight;
+
+Entity.PointLight = function(name) {
+  var args;
+  (typeof name === "string") ?
+    args = Array.prototype.slice.call(arguments, 1) :
+    args = Array.prototype.slice.call(arguments);
+
+  THREE.PointLight.apply(this, args);
+
+  _.extend(this, Entity.prototype);
+  Entity.call(this, name);
+};
+Entity.PointLight.prototype = Object.create(THREE.PointLight.prototype);
+Entity.PointLight.prototype.constructor = Entity.PointLight;
