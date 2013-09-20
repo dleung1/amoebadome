@@ -129,6 +129,81 @@
     var player = Amoeba.addEntity("Player");
     camera.getComponent("follow").target = player;
 
+    // TEST SHIT
+    Prefab.define("Circles", function() {
+      var visited = [];
+      var c = new THREE.CircleGeometry();
+      var m = new THREE.Mesh(
+        new THREE.CircleGeometry(),
+        new THREE.MeshBasicMaterial()
+      );
+      m.position.set(-50, 0, 0);
+      THREE.GeometryUtils.merge(c, m);
+
+      var vlist = c.vertices.filter(function(el) {
+        var eps = 0.0001;
+        return (Math.abs(el.x) > eps) || 
+          (Math.abs(el.y) > eps) || 
+          (Math.abs(el.z) > eps);
+      });
+      var v = vlist[0];
+
+      var itr = function(el) {
+        return (el.x == v.x) && (el.y == v.y) && (el.z == v.z);
+      };
+
+      while(!_.find(visited, itr)) {
+        visited.push(v);
+
+        var vn = new THREE.Vector3().copy(v).normalize();
+        var vt = Math.atan2(vn.x, vn.y);
+        vt = (vt < 0) ? (2 * Math.PI) + vt : vt;
+
+        vlist = _.sortBy(vlist, function(a) {
+          var an = new THREE.Vector3().copy(a).normalize();
+          var at = Math.atan2(an.x - vn.x, an.y - vn.y);
+          at = at - vt;
+          at = (at < 0) ? (2 * Math.PI) + at : at;
+
+          return at;
+        });
+        v = vlist[1];
+        console.log(v);
+      }
+      _.each(visited, function(el) { console.log(el) });
+
+      var spline = new THREE.Spline(visited);
+      var geometry = new THREE.Geometry();
+      var pos, idx;
+      var colors = [];
+      var material = new THREE.LineBasicMaterial({ 
+        color: 0xffffff,
+        linewidth: 3
+      });
+
+      for(var i = 0; i < visited.length * 6; i++) {
+        idx = i / (visited.length * 6);
+        pos = spline.getPoint(idx);
+
+        geometry.vertices[i] = new THREE.Vector3(pos.x, pos.y, pos.z);
+        colors[i] = new THREE.Color(0xffffff);
+        colors[i].setHSL(0.6, 1.0, Math.max(0, -pos.x / 200) + 0.5);
+      }
+      console.log(geometry.vertices);
+      geometry.colors = colors;
+
+      var line = new THREE.Line(geometry, material);
+      line.position.set(0, 100, 0);
+      line.rotation.x = Math.PI / 2;
+      Amoeba._scene.add(line);
+      
+      var m = new Entity.Mesh(c, new THREE.MeshLambertMaterial());
+      m.rotation.x = -Math.PI / 2;
+      m.position.set(0, 50, 0);
+      return m;
+    });
+    Amoeba.addEntity("Circles");
+
     Prefab.define("Ground", function() {
       var pln = new THREE.PlaneGeometry(1000, 1000, 20, 20)
         , gma = new THREE.MeshLambertMaterial()
