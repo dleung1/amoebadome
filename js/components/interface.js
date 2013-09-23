@@ -1,4 +1,4 @@
-var Interface = function(elements) {
+var Interface = function(elements, anchor) {
   this._elements = {};
   this._root = $(document.createElement('dl'))
   .css(Interface.style)
@@ -7,29 +7,42 @@ var Interface = function(elements) {
   this._halfWidth = $(Game.config.canvas).innerWidth() / 2;
   this._halfHeight = $(Game.config.canvas).innerHeight() / 2;
 
+  this._anchor = anchor;
   this.addElements(elements);
   Component.call(this, "interface");
 };
 
 Interface.prototype = Object.create(Component.prototype);
-Interface.prototype.constructor = Controller;
+Interface.prototype.constructor = Interface;
+
+Interface.prototype.setOwner = function(owner) {
+  if (this._anchor) {
+    $(this._root).css({
+      left: this._anchor[0],
+      top: this._anchor[1]
+    });
+  };
+  Component.prototype.setOwner.call(this, owner);
+};
 
 Interface.prototype.update = function(dt) {
   if (this._owner === 'undefined') return;
 
-  var pos = new THREE.Vector3();
-  pos.copy(this._owner.position);
+  if (!this._anchor) {
+    var pos = new THREE.Vector3();
+    pos.copy(this._owner.position);
 
-  var projector = new THREE.Projector();
-  projector.projectVector(pos, Entity.Camera.main);
+    var projector = new THREE.Projector();
+    projector.projectVector(pos, Entity.Camera.main);
 
-  pos.x = (pos.x + 1) * this._halfWidth;
-  pos.y = (pos.y + 1) * this._halfHeight;
+    pos.x = (pos.x + 1) * this._halfWidth;
+    pos.y = (pos.y + 1) * this._halfHeight;
 
-  $(this._root).css({
-    left: pos.x,
-    top: pos.y
-  });
+    $(this._root).css({
+      left: pos.x,
+      top: pos.y
+    });
+  }
 
   // Update each interface control.
   _.each(_.values(this._elements), function(el) {
@@ -47,7 +60,7 @@ Interface.prototype.addElements = function(elem) {
     var data = el[1];
     
     var e = $(this._root)
-    .append("<dt class='" + name + "'>" + name + "</dt>")
+    .append("<dt class='" + name + "'></dt>")
     .find('.' + name)
     .css(data.style || {})
     .append("<dd></dd>")

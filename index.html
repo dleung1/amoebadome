@@ -40,7 +40,7 @@
       debug: true,
     });
 
-    Prefab.define("PlayerCamera", function() {
+    Prefab.define("MenuCamera", function() {
       var camera = new Entity.Camera(
         45, 
         window.innerWidth / window.innerHeight,
@@ -51,83 +51,47 @@
       var follow = new Follow();
       follow.offset = new THREE.Vector3(0, 200, -1); //Fuck you, gimbal.
 
-      var controls = new Controller({
-        'forward': function() {
-          var tar = this.getComponent("follow").target;
-          tar.getComponent("rigidbody")._body.force.z = 200;
-        },
-        'left': function() {
-          var tar = this.getComponent("follow").target;
-          tar.getComponent("rigidbody")._body.force.x = 200;
-        },
-        'right': function() {
-          var tar = this.getComponent("follow").target;
-          tar.getComponent("rigidbody")._body.force.x = -200;
-        },
-        'back': function() {
-          var tar = this.getComponent("follow").target;
-          tar.getComponent("rigidbody")._body.force.z = -200;
-        },
-        'query': function() {
-          this.getComponent("follow").offset.add(new THREE.Vector3(0, 50, 0));
-        },
-        'use': function() {
-          this.getComponent("follow").offset.add(new THREE.Vector3(0, -50, 0));
-        }
-      });
       camera.addComponent(follow);
-      camera.addComponent(controls);
       return camera;
     });
-    var camera = Amoeba.addEntity("PlayerCamera");
+    var camera = Amoeba.addEntity("MenuCamera");
 
-    Prefab.define("Player", function() {
-      var master = new Entity.Mesh(
-        "Player",
-        new THREE.SphereGeometry(),
-        new THREE.MeshPhongMaterial()
-      );
-      var mbody = new Rigidbody(0.5, new CANNON.Sphere(50));
-      mbody._body.position.set(0, 100, 0);
+    Prefab.define("ConfigMenu", function() {
+      var master = new Entity.Transform("ConfigMenu");
 
       var inter = new Interface({
-        'position': {
+        'sphere': {
           target: master,
           setup: function(el) {
-            $(document.createElement('p'))
-            .addClass('x')
-            .css({
-              color: '#ff0000'
-            })
-            .appendTo($(el));
-
-            $(document.createElement('p'))
-            .addClass('y')
-            .css({
-              color: '#00ff00'
-            })
-            .appendTo($(el));
-
-            $(document.createElement('p'))
-            .addClass('z')
+            $(document.createElement('button'))
+            .text('Sphere')
+            .addClass('sphere')
             .css({
               color: '#0000ff'
             })
-            .appendTo($(el));
-          },
-          update: function(el) {
-            $(el).find('.x').text(this.position.x.toPrecision(5));
-            $(el).find('.y').text(this.position.y.toPrecision(5));
-            $(el).find('.z').text(this.position.z.toPrecision(5));
+            .appendTo($(el))
+            .click(function() {
+              Amoeba.addEntity("SphereProxy"); 
+            });
           }
         }
-      });
+      }, [50, 50]);
+
       master.addComponent(inter);
-      master.addComponent(mbody);
       return master;
     });
-    var player = Amoeba.addEntity("Player");
-    camera.getComponent("follow").target = player;
+    var menu = Amoeba.addEntity("ConfigMenu");
+
+    Prefab.define("PlayerBase", function() {
+      var sphere = new Entity.Mesh(
+        "PlayerBase",
+        new THREE.SphereGeometry(),
+        new THREE.MeshLambertMaterial()
+      );
+      return sphere;
+    });
+    var base = Amoeba.addEntity("PlayerBase");
+    camera.getComponent('follow').target = base;
 
     Prefab.define("Ground", function() {
       var pln = new THREE.PlaneGeometry(1000, 1000, 20, 20)
@@ -144,26 +108,35 @@
       ground.addComponent(sbd);
       return ground;
     });
-    Amoeba.addEntity("Ground");
+    var ground = Amoeba.addEntity("Ground");
 
+    Prefab.define("SphereProxy", function() {
+      var sphere = new Entity.Mesh(
+        "SphereProxy",
+        new THREE.SphereGeometry(25),
+        new THREE.MeshLambertMaterial()
+      );
+
+      var projector = new THREE.Projector();
+      var controller = new Controller({
+        'pointer.move': function(x, y) {
+          var vec = new THREE.Vector3(
+            (x / window.innerWidth) * 2 - 1,
+            (y / window.innerHeight) * -2 + 1,
+            0.5
+          );
+          var ray = projector.pickingRay(vec, camera);
+          this.position = _.head(ray.intersectObject(ground)).point;
+        }
+      });
+      sphere.addComponent(controller);
+      return sphere;
+    });
+    
     var light = new Entity.PointLight("Light", 0xff0000, 1, 1000);
     light.position.set(0, 300, 0);
     Amoeba.addEntity(light);
 
-    var helpZ = new THREE.ArrowHelper(
-      new THREE.Vector3(0, 0, 1),
-      new THREE.Vector3(0, 0, 0),
-      50,
-      0xFF0000
-    );
-    var helpX = new THREE.ArrowHelper(
-      new THREE.Vector3(1, 0, 0),
-      new THREE.Vector3(0, 0, 0),
-      50,
-      0x00FF00
-    );
-    Amoeba._scene.add(helpZ);
-    Amoeba._scene.add(helpX);
     Amoeba.run();
     
 	</script>

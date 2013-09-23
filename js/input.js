@@ -12,6 +12,10 @@ var InputService = Class.create(EventEmitter.prototype, {
     this._keys = new THREEx.KeyboardState();
     this.keymap = _.extend(this.keymap, keys || {});
     this._tick();
+          
+    $(document).mousemove($.proxy(function(e) {
+      this.emitEvent('pointer.move', [e.pageX, e.pageY]);
+    }, this));
   },
   _tick: function() {
     window.requestAnimationFrame(this._tick.bind(this));
