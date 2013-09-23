@@ -14,11 +14,10 @@ var InputService = Class.create(EventEmitter.prototype, {
     this._tick();
     
     var myMouse = function(event){ //Mouse Movment Event
-      self.emitEvent('moveCursor', [event.pageX , event.pageY]);
+      this.emitEvent('moveCursor', [event.pageX , event.pageY]);
     }
     $(document).mousemove($.proxy(myMouse, this));
-
-   },
+  },
   _tick: function() {
     window.requestAnimationFrame(this._tick.bind(this));
     _.each(_.pairs(this.keymap), function(el) {
