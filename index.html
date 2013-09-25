@@ -38,7 +38,7 @@
       width: window.innerWidth,
       height: window.innerHeight,
       debug: true,
-    });
+    }, "scene1");
 
     Prefab.define("MenuCamera", function() {
       var camera = new Entity.Camera(
@@ -110,6 +110,12 @@
     });
     var ground = Amoeba.addEntity("Ground");
 
+    var vertices = _.filter(base.geometry.vertices, function(vert) {
+      return Math.abs(vert.y - 25) < 0.00001;
+    });
+    var eligible = [
+      [base, vertices]
+    ];
     Prefab.define("SphereProxy", function() {
       var sphere = new Entity.Mesh(
         "SphereProxy",
@@ -126,7 +132,41 @@
             0.5
           );
           var ray = projector.pickingRay(vec, camera);
-          this.position = _.head(ray.intersectObject(ground)).point;
+          var tar = _.head(ray.intersectObject(ground)).point;
+          tar.add(new THREE.Vector3(0, 25, 0)); 
+
+          var selected = null;
+          _.each(eligible, function(el) {
+            var verts = _.sortBy(el[1], function(vert) {
+              return tar.distanceToSquared(vert);
+            });
+
+            var closest = _.head(verts)
+              , distance = closest.distanceToSquared(tar);
+
+            if (distance < 225) {
+              if (!selected) {
+                selected = closest;
+              } 
+
+              if (selected && distance < selected.distanceToSquared(tar)) {
+                selected = closest;
+              }
+            }
+          });
+
+          if (selected) {
+            this.snapped = true;
+            this.position = selected;
+          } else {
+            this.snapped = false;
+            this.position = tar;
+          }
+        },
+        'pointer.down': function(x, y) {
+          if (this.snapped) {
+            this.removeComponent("controller");
+          }
         }
       });
       sphere.addComponent(controller);

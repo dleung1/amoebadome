@@ -13,8 +13,12 @@ var InputService = Class.create(EventEmitter.prototype, {
     this.keymap = _.extend(this.keymap, keys || {});
     this._tick();
           
-    $(document).mousemove($.proxy(function(e) {
+    $(document)
+    .on("mousemove", $.proxy(function(e) {
       this.emitEvent('pointer.move', [e.pageX, e.pageY]);
+    }, this))
+    .on("mousedown", $.proxy(function(e) {
+      this.emitEvent('pointer.down', [e.pageX, e.pageY]);
     }, this));
   },
   _tick: function() {

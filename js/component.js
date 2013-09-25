@@ -15,3 +15,6 @@ Component.prototype.getOwner = function() {
 Component.prototype.getType = function() {
   return this._type;
 };
+Component.prototype.destroy = function() {
+  delete this;
+};

@@ -10,6 +10,9 @@ Entity.prototype = _.extend({
   },
   getComponent: function(type) {
     return this.components[type];
+  },
+  removeComponent: function(type) {
+    this.components[type].destroy();
   }
 }, EventEmitter.prototype);
 Entity.prototype.constructor = Entity.Transform;
