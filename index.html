@@ -33,12 +33,12 @@
 <body>
   <div id="amoeba"></div>
 	<script type="text/javascript">
-    var Amoeba = new Game({
+    Game.init({
       canvas: '#amoeba',
       width: window.innerWidth,
       height: window.innerHeight,
       debug: true,
-    }, "scene1");
+    });
 
     Prefab.define("MenuCamera", function() {
       var camera = new Entity.Camera(
@@ -54,7 +54,7 @@
       camera.addComponent(follow);
       return camera;
     });
-    var camera = Amoeba.addEntity("MenuCamera");
+    var camera = Game.addEntity("MenuCamera");
 
     Prefab.define("ConfigMenu", function() {
       var master = new Entity.Transform("ConfigMenu");
@@ -71,7 +71,7 @@
             })
             .appendTo($(el))
             .click(function() {
-              Amoeba.addEntity("SphereProxy"); 
+              Game.addEntity("SphereProxy"); 
             });
           }
         }
@@ -80,7 +80,7 @@
       master.addComponent(inter);
       return master;
     });
-    var menu = Amoeba.addEntity("ConfigMenu");
+    var menu = Game.addEntity("ConfigMenu");
 
     Prefab.define("PlayerBase", function() {
       var sphere = new Entity.Mesh(
@@ -90,7 +90,7 @@
       );
       return sphere;
     });
-    var base = Amoeba.addEntity("PlayerBase");
+    var base = Game.addEntity("PlayerBase");
     camera.getComponent('follow').target = base;
 
     Prefab.define("Ground", function() {
@@ -108,7 +108,7 @@
       ground.addComponent(sbd);
       return ground;
     });
-    var ground = Amoeba.addEntity("Ground");
+    var ground = Game.addEntity("Ground");
 
     var vertices = _.filter(base.geometry.vertices, function(vert) {
       return Math.abs(vert.y - 25) < 0.00001;
@@ -175,9 +175,8 @@
     
     var light = new Entity.PointLight("Light", 0xff0000, 1, 1000);
     light.position.set(0, 300, 0);
-    Amoeba.addEntity(light);
-
-    Amoeba.run();
+    Game.addEntity(light);
+    Game.run();
     
 	</script>
 </body>
