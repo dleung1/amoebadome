@@ -23,15 +23,27 @@
     <script src="js/component.js"></script>
     <script src="js/entity.js"></script>
     <script src="js/prefab.js"></script>
+    <script src="js/interface.js"></script>
     <script src="js/components/controller.js"></script>
     <script src="js/components/rigidbody.js"></script>
     <script src="js/components/follow.js"></script>
-    <script src="js/components/interface.js"></script>
 
 		<link  href="css/main.css" rel="stylesheet"/>
 	</head>
 <body>
-  <div id="amoeba"></div>
+  <script type="game/interface" name="Config">
+    <div class="item-nav">
+      <div data-bind="Player">
+        <h2 data-property="currency" data-watch></h2>
+        <button data-click="doThing"></button>
+      </div>
+    </div>
+  </script>
+
+  <div id="amoeba">
+    <div id="interface"></div>
+  </div>
+
 	<script type="text/javascript">
     Game.init({
       canvas: '#amoeba',
@@ -58,26 +70,6 @@
 
     Prefab.define("ConfigMenu", function() {
       var master = new Entity.Transform("ConfigMenu");
-
-      var inter = new Interface({
-        'sphere': {
-          target: master,
-          setup: function(el) {
-            $(document.createElement('button'))
-            .text('Sphere')
-            .addClass('sphere')
-            .css({
-              color: '#0000ff'
-            })
-            .appendTo($(el))
-            .click(function() {
-              Game.addEntity("SphereProxy"); 
-            });
-          }
-        }
-      }, [50, 50]);
-
-      master.addComponent(inter);
       return master;
     });
     var menu = Game.addEntity("ConfigMenu");
@@ -88,6 +80,9 @@
         new THREE.SphereGeometry(),
         new THREE.MeshLambertMaterial()
       );
+
+      sphere.userData.currency = 999;
+
       return sphere;
     });
     var base = Game.addEntity("PlayerBase");
@@ -178,6 +173,17 @@
     Game.addEntity(light);
     Game.run();
     
+    Interface.to("Config", {
+      Player: base.userData
+    }, {
+      doThing: function(e) {
+        Game.addEntity("SphereProxy");
+        console.log(e);
+        console.log(this);
+      }
+    });
+
 	</script>
-</body>
+
+  </body>
 </html>
