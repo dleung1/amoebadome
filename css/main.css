@@ -44,7 +44,8 @@ body {
 
 .item-nav {
   background: #aaaaaa;
-  height: 100%;
+  border: solid;
+  height: 100%; 
   float: right;
   width: 25%;
 }
@@ -53,7 +54,7 @@ body {
 	width: 90%;
 	height: 90%;	
 }
-
+/*-------------------------------------------------Currency Box-------------------------------------------------------------*/
 .item-nav [data-property] {
 	width: 100%;
 	height: 10%;
@@ -68,7 +69,7 @@ body {
 	border-top-style: outset;
 	box-shadow: 10px 10px 5px #888888;
 }
-
+/*-------------------------------------------------Interface Buttons-------------------------------------------------------------*/
 .item-nav [data-click] {
 	width : 25%;
 	height: 15%;
@@ -80,5 +81,14 @@ body {
 
 	border-left-style: outset;
 	border-top-style: outset;
+	border-radius: 15px;
 	box-shadow: 10px 10px 5px #888888;
+}
+
+.item-nav [data-click]:hover, 
+.item-nav [data-click]:focus {
+	border-radius: 15px;
+	border-color: #669999;
+	background-color: #696969;
+	outline:none;
 }
