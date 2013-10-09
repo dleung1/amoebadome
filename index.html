@@ -74,6 +74,32 @@
       var follow = new Follow();
       follow.offset = new THREE.Vector3(0, 200, -1); //Fuck you, gimbal.
 
+      var control = new Controller({
+        'forward': function() {
+          var tar = this.getComponent("follow").target;
+          tar.getComponent("rigidbody")._body.force.z = 200;
+        },
+        'left': function() {
+          var tar = this.getComponent("follow").target;
+          tar.getComponent("rigidbody")._body.force.x = 200;
+        },
+        'back': function() {
+          var tar = this.getComponent("follow").target;
+          tar.getComponent("rigidbody")._body.force.z = -200;
+        },
+        'right': function() {
+          var tar = this.getComponent("follow").target;
+          tar.getComponent("rigidbody")._body.force.x = -200;
+        },
+        'query': function() {
+          this.getComponent("follow").offset.add(new THREE.Vector3(0, 50, 0));
+        },
+        'use': function() {
+          this.getComponent("follow").offset.add(new THREE.Vector3(0, -50, 0));
+        }
+      });
+
+      camera.addComponent(control);
       camera.addComponent(follow);
       return camera;
     });
@@ -94,6 +120,16 @@
 
       sphere.userData.currency = 999;
 
+      var rbody = new Rigidbody(0.5, new CANNON.Sphere(50));
+      rbody._body.position.set(0, 100, 0);
+
+      var repl = new Network([
+        "position.x", 
+        "position.y",
+        "position.z"
+      ]);
+      sphere.addComponent(rbody);
+      sphere.addComponent(repl);
       return sphere;
     });
     var base = Game.addEntity("PlayerBase");
