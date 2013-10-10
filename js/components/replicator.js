@@ -14,7 +14,7 @@ Replicator.prototype.setOwner = function(owner) {
     return ag;
   }, {});
 
-  this._socket.emit('agent.new', owner.id, "PlayerBase", data); 
+  this._socket.emit('agent.create', owner.id, "PlayerBase", data); 
   Component.prototype.setOwner.call(this, owner);
 };
 

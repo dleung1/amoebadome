@@ -108,7 +108,7 @@
       var sphere = new Entity.Mesh(
         "PlayerBase",
         new THREE.SphereGeometry(),
-        new THREE.MeshLambertMaterial()
+        new THREE.MeshNormalMaterial()
       );
 
       sphere.userData.currency = 999;
@@ -117,12 +117,16 @@
 
     Prefab.define("Player", function() {
       var base = Prefab.create("PlayerBase");
+
       var rbod = new Rigidbody(0.5, new CANNON.Sphere(50));  
+      rbod._body.position.y = 100;
+
       var repl = new Replicator([
         "position.x",
         "position.y",
         "position.z"
       ]);
+
       base.addComponent(rbod);
       base.addComponent(repl);
       return base;
@@ -133,7 +137,7 @@
 
     Prefab.define("Ground", function() {
       var pln = new THREE.PlaneGeometry(1000, 1000, 20, 20)
-        , gma = new THREE.MeshLambertMaterial()
+        , gma = new THREE.MeshNormalMaterial()
         , gcd = new CANNON.Plane();
 
       var ground = new Entity.Mesh("Ground", pln, gma);
@@ -146,22 +150,7 @@
       return ground;
     });
     var ground = Game.addEntity("Ground");
-
-    var light = new Entity.PointLight("Light", 0xff0000, 1, 1000);
-    light.position.set(0, 300, 0);
-    Game.addEntity(light);
     Game.run();
-    
-    Interface.to("Config", {
-      Player: player.userData
-    }, {
-      doThing: function(e) {
-        Game.addEntity("SphereProxy");
-        console.log(e);
-        console.log(this);
-      }
-    });
-
 	</script>
 
   </body>

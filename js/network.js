@@ -7,10 +7,9 @@ var Network = (function() {
     uuid = data.uuid;
   });
 
-  socket.on('agent.new', function(uuid, type, data) {
-    console.log("Registered Agent:", uuid);
+  socket.on('agent.create', function(uuid, type, data) {
+    console.log("Creating Agent:", uuid);
     var proxy = Game.addEntity(type);
-    console.log(proxy);
     _.each(_.pairs(data), function(el) {
       _.deep(proxy, el[0], el[1]); 
     });
@@ -21,6 +20,12 @@ var Network = (function() {
     _.each(_.pairs(data), function(el) {
       _.deep(proxies[uuid], el[0], el[1]);
     });
+  });
+  
+  socket.on('agent.destroy', function(uuid) {
+    console.log("Destroying Agent: %s", uuid);
+    Game.removeEntity(proxies[uuid]);
+    delete proxies[uuid];
   });
 
   return {
