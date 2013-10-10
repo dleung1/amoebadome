@@ -72,7 +72,7 @@ var Game = (function() {
     },
     update: function(dt) {
       window.requestAnimationFrame(this.update.bind(this));
-      this.emitEvent('tick');
+      this.emitEvent('tick', [dt]);
       this.render();
     },
     render: function() {
