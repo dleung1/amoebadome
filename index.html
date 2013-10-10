@@ -64,7 +64,7 @@
       debug: true,
     });
 
-    Prefab.define("MenuCamera", function() {
+    Prefab.define("PlayerCamera", function() {
       var camera = new Entity.Camera(
         45, 
         window.innerWidth / window.innerHeight,
@@ -99,18 +99,10 @@
           this.getComponent("follow").offset.add(new THREE.Vector3(0, -50, 0));
         }
       });
-
       camera.addComponent(control);
       camera.addComponent(follow);
       return camera;
     });
-    var camera = Game.addEntity("MenuCamera");
-
-    Prefab.define("ConfigMenu", function() {
-      var master = new Entity.Transform("ConfigMenu");
-      return master;
-    });
-    var menu = Game.addEntity("ConfigMenu");
 
     Prefab.define("PlayerBase", function() {
       var sphere = new Entity.Mesh(
@@ -120,21 +112,24 @@
       );
 
       sphere.userData.currency = 999;
-
-      var rbody = new Rigidbody(0.5, new CANNON.Sphere(50));
-      rbody._body.position.set(0, 100, 0);
-
-      sphere.addComponent(rbody);
       return sphere;
     });
-    var player = Game.addEntity("PlayerBase");
-    var repl = new Replicator([
-      "position.x",
-      "position.y",
-      "position.z"
-    ]);
-    player.addComponent(repl);
-    camera.getComponent('follow').target = player;
+
+    Prefab.define("Player", function() {
+      var base = Prefab.create("PlayerBase");
+      var rbod = new Rigidbody(0.5, new CANNON.Sphere(50));  
+      var repl = new Replicator([
+        "position.x",
+        "position.y",
+        "position.z"
+      ]);
+      base.addComponent(rbod);
+      base.addComponent(repl);
+      return base;
+    });
+    var player = Game.addEntity("Player");
+    var playerCamera = Game.addEntity("PlayerCamera");
+    playerCamera.getComponent('follow').target = player;
 
     Prefab.define("Ground", function() {
       var pln = new THREE.PlaneGeometry(1000, 1000, 20, 20)
