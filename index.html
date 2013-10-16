@@ -99,10 +99,6 @@
       );
 
       sphere.userData.currency = 999;
-<<<<<<< HEAD
-
-      return sphere;
-=======
       return sphere;
     });
 
@@ -117,7 +113,6 @@
       base.addComponent(rbod);
       base.addComponent(repl);
       return base;
->>>>>>> parent of 2af16eb... Sync client/agent disconnections.
     });
     var base = Game.addEntity("PlayerBase");
     camera.getComponent('follow').target = base;
@@ -139,7 +134,6 @@
     });
     var ground = Game.addEntity("Ground");
 
-<<<<<<< HEAD
     var vertices = _.filter(base.geometry.vertices, function(vert) {
       return Math.abs(vert.y - 25) < 0.00001; //what does the < do here? return outside verts?
     });
@@ -283,31 +277,22 @@
       return spike;
     });
     
-=======
->>>>>>> parent of 2af16eb... Sync client/agent disconnections.
     var light = new Entity.PointLight("Light", 0xff0000, 1, 1000);
     light.position.set(0, 300, 0);
     Game.addEntity(light);
     Game.run();
     
     Interface.to("Config", {
-<<<<<<< HEAD
       Player: base.userData
-=======
-      Player: player.userData
->>>>>>> parent of 2af16eb... Sync client/agent disconnections.
     }, {
       doThing: function(e) {
         Game.addEntity("SphereProxy");
         console.log(e);
         console.log(this);
-<<<<<<< HEAD
       },
 
       makeSpike: function(e) {
         Game.addEntity("SpikeProxy");
-=======
->>>>>>> parent of 2af16eb... Sync client/agent disconnections.
       }
     });
 
