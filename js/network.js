@@ -7,7 +7,7 @@ var Network = (function() {
     uuid = data.uuid;
   });
 
-  socket.on('agent.new', function(uuid, type, data) {
+  socket.on('agent.create', function(uuid, type, data) {
     console.log("Registered Agent:", uuid);
     var proxy = Game.addEntity(type);
     console.log(proxy);
