@@ -23,6 +23,12 @@ var Network = (function() {
     });
   });
 
+  socket.on('agent.destroy', function(uuid) {
+    console.log("Destroying agnet: %s", uuid);
+    Game.removeEntity(proxies[uuid]);
+    delete proxies[uuid];
+  });
+
   return {
     socket: socket
   }
